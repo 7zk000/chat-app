@@ -1,0 +1,7 @@
+* text=auto
+.DS_Store
+src/firebase/firebase.js
+server/
+node_modules/
+config/
+client/
