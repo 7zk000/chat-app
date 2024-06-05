@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
-
-const socket = io('http://localhost:3000');
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useChat from './hooks/useChat';
+import { useAuthContext } from '../context/AuthContext';
+import '../style/chat.css';
 
 function Chat() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const { messages, input, setInput, sendMessage } = useChat();
 
   useEffect(() => {
-    socket.on('message', message => {
-      setMessages(prevMessages => [...prevMessages, message]);
-    });
-  }, []);
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
-  const sendMessage = () => {
-    socket.emit('message', input);
-    setInput('');
-  };
+  if (!user) {
+    return null; // 認証されていない場合は何も表示しない
+  }
 
   return (
     <div>

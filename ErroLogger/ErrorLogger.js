@@ -4,7 +4,7 @@ function ErrorLogger({ error }) {
   useEffect(() => {
     if (error) {
       console.error('Error:', error);
-      fetch('http://localhost:3000/log', {
+      fetch('http://localhost:3001/log', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

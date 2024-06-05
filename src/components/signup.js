@@ -1,33 +1,16 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AuthForm from '../components/AuthForm';
+import React from 'react';
+import { useAuthContext } from '../context/AuthContext';
+import useAuth from './hooks/useAuth';
+import AuthForm from './AuthForm';
+import '../style/signup.css';
 
 function Signup() {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [inviteCode, setInviteCode] = useState('');
-  const [error, setError] = useState('');
+  const { setUser } = useAuthContext();
+  const { username, setUsername, password, setPassword, inviteCode, setInviteCode, error, handleAuth } = useAuth('http://localhost:3001/signup');
 
-  const handleSignup = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password, inviteCode }),
-      });
-
-      if (response.ok) {
-        navigate('/chat');
-      } else {
-        const errorMessage = await response.text();
-        setError(`サーバーエラー: ${errorMessage}`);
-      }
-    } catch (error) {
-      setError(`ネットワークエラー: ${error.message}`);
-    }
+  const handleSubmit = async () => {
+    await handleAuth();
+    setUser({ username });
   };
 
   return (
@@ -39,7 +22,7 @@ function Signup() {
       setPassword={setPassword}
       inviteCode={inviteCode}
       setInviteCode={setInviteCode}
-      handleSubmit={handleSignup}
+      handleSubmit={handleSubmit}
       showInviteCode={true}
       error={error}
     />

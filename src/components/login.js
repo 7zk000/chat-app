@@ -1,32 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useAuthContext } from '../context/AuthContext';
+import useAuth from './hooks/useAuth';
 import AuthForm from './AuthForm';
+import '../style/login.css';
+
 
 function Login() {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const { setUser } = useAuthContext();
+  const { username, setUsername, password, setPassword, error, handleAuth } = useAuth('http://localhost:3001/login');
 
-  const handleLogin = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (response.ok) {
-        navigate('/home');
-      } else {
-        const errorMessage = await response.text();
-        setError(`サーバーエラー: ${errorMessage}`);
-      }
-    } catch (error) {
-      setError(`ネットワークエラー: ${error.message}`);
-    }
+  const handleSubmit = async () => {
+    await handleAuth();
+    setUser({ username });
   };
 
   return (
@@ -36,7 +21,7 @@ function Login() {
       setUsername={setUsername}
       password={password}
       setPassword={setPassword}
-      handleSubmit={handleLogin}
+      handleSubmit={handleSubmit}
       showInviteCode={false}
       error={error}
     />
