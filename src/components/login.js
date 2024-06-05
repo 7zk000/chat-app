@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthForm from '../components/AuthForm';
+import AuthForm from './AuthForm';
 
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
     try {
@@ -20,11 +21,11 @@ function Login() {
       if (response.ok) {
         navigate('/home');
       } else {
-        alert('ログインに失敗しました。');
+        const errorMessage = await response.text();
+        setError(`サーバーエラー: ${errorMessage}`);
       }
     } catch (error) {
-      console.error('ログインエラー:', error);
-      alert('ログイン中にエラーが発生しました。');
+      setError(`ネットワークエラー: ${error.message}`);
     }
   };
 
@@ -37,6 +38,7 @@ function Login() {
       setPassword={setPassword}
       handleSubmit={handleLogin}
       showInviteCode={false}
+      error={error}
     />
   );
 }

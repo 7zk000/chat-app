@@ -7,6 +7,7 @@ function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
+  const [error, setError] = useState('');
 
   const handleSignup = async () => {
     try {
@@ -21,11 +22,11 @@ function Signup() {
       if (response.ok) {
         navigate('/chat');
       } else {
-        alert('サインアップに失敗しました。');
+        const errorMessage = await response.text();
+        setError(`サーバーエラー: ${errorMessage}`);
       }
     } catch (error) {
-      console.error('サインアップエラー:', error);
-      alert('サインアップ中にエラーが発生しました。');
+      setError(`ネットワークエラー: ${error.message}`);
     }
   };
 
@@ -40,6 +41,7 @@ function Signup() {
       setInviteCode={setInviteCode}
       handleSubmit={handleSignup}
       showInviteCode={true}
+      error={error}
     />
   );
 }
